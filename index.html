@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AR QR Code Generator</title>
+<style>
+  body {
+    font-family: sans-serif; 
+    margin:20px;
+  }
+  label {
+    display:block; 
+    margin-top:10px;
+  }
+  #qrcode {
+    margin-top:20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Generate AR QR Code</h1>
+<p>These are the relative URLs for your local setup. Adjust if needed.</p>
+
+<!-- Using relative paths assuming 'ar.html', 'model.glb', 'patt.hiro' are in the same directory as index.html -->
+<label>
+  AR Page URL (ar.html):
+  <input type="text" id="arPageUrl" value="./ar.html" style="width:100%;">
+</label>
+
+<label>
+  Model URL (model.glb):
+  <input type="text" id="modelUrl" value="./model.glb" style="width:100%;">
+</label>
+
+<label>
+  Pattern URL (patt.hiro):
+  <input type="text" id="patternUrl" value="./patt.hiro" style="width:100%;">
+</label>
+
+<label>
+  Model Scale:
+  <input type="number" step="0.1" id="scale" value="0.5" style="width:60px;">
+</label>
+
+<button id="generateBtn">Generate QR Code</button>
+
+<div id="qrcode"></div>
+
+<script src="./qrcodejs-master/qrcode.min.js"></script>
+<script>
+document.getElementById('generateBtn').addEventListener('click', () => {
+  const arPage = document.getElementById('arPageUrl').value;
+  const model = encodeURIComponent(document.getElementById('modelUrl').value);
+  const pattern = encodeURIComponent(document.getElementById('patternUrl').value);
+  const scale = encodeURIComponent(document.getElementById('scale').value);
+
+  const finalUrl = `${arPage}?modelUrl=${model}&patternUrl=${pattern}&scale=${scale}`;
+
+  document.getElementById('qrcode').innerHTML = '';
+  new QRCode(document.getElementById('qrcode'), {
+    text: finalUrl,
+    width: 256,
+    height: 256,
+  });
+
+  const linkEl = document.createElement('p');
+  linkEl.innerHTML = `<a href="${finalUrl}" target="_blank">${finalUrl}</a>`;
+  document.getElementById('qrcode').appendChild(linkEl);
+});
+</script>
+
+</body>
+</html>
