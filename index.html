@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>AR QR Code Generator</title>
 <style>
@@ -21,22 +21,27 @@
 <body>
 
 <h1>Generate AR QR Code</h1>
-<p>These are the relative URLs for your local setup. Adjust if needed.</p>
+<p>Default values below assume all files are hosted at your GitHub Pages URL.</p>
 
-<!-- Using relative paths assuming 'ar.html', 'model.glb', 'patt.hiro' are in the same directory as index.html -->
 <label>
   AR Page URL (ar.html):
-  <input type="text" id="arPageUrl" value="./ar.html" style="width:100%;">
+  <input type="text" id="arPageUrl" 
+         value="https://hunterzsyt.github.io/my-ar-project.github.io/ar.html" 
+         style="width:100%;">
 </label>
 
 <label>
   Model URL (model.glb):
-  <input type="text" id="modelUrl" value="./model.glb" style="width:100%;">
+  <input type="text" id="modelUrl" 
+         value="https://hunterzsyt.github.io/my-ar-project.github.io/model.glb" 
+         style="width:100%;">
 </label>
 
 <label>
   Pattern URL (patt.hiro):
-  <input type="text" id="patternUrl" value="./patt.hiro" style="width:100%;">
+  <input type="text" id="patternUrl"
+         value="https://hunterzsyt.github.io/my-ar-project.github.io/patt.hiro"
+         style="width:100%;">
 </label>
 
 <label>
@@ -48,7 +53,8 @@
 
 <div id="qrcode"></div>
 
-<script src="./qrcodejs-master/qrcode.min.js"></script>
+<!-- Load the QRCode library -->
+<script src="https://hunterzsyt.github.io/my-ar-project.github.io/qrcodejs-master/qrcode.min.js"></script>
 <script>
 document.getElementById('generateBtn').addEventListener('click', () => {
   const arPage = document.getElementById('arPageUrl').value;
