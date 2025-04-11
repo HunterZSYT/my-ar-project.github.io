@@ -26,6 +26,45 @@
     font-size:14px;
     z-index:9999;
   }
+  .error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,0,0,0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 16px;
+    z-index: 9999;
+  }
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10000;
+  }
+  .spinner {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 </style>
 </head>
 <body>
@@ -36,6 +75,13 @@
   The 3D model should appear on the marker.
 </div>
 
+<div id="error-container"></div>
+
+<div id="loading-overlay" class="loading-overlay">
+  <div class="spinner"></div>
+  <div>Loading AR experience...</div>
+</div>
+
 <a-scene embedded arjs="sourceType: camera; debugUIEnabled: false;">
   <a-marker id="marker" type="pattern" patternUrl="">
     <a-entity id="model" gltf-model="" position="0 0 0" scale="0.5 0.5 0.5"></a-entity>
@@ -44,14 +90,45 @@
 </a-scene>
 
 <script>
+  // Add loading overlay
+  const loadingOverlay = document.getElementById('loading-overlay');
+  
+  // Hide loading overlay when scene is loaded
+  document.querySelector('a-scene').addEventListener('loaded', function () {
+    loadingOverlay.style.display = 'none';
+  });
+
   const urlParams = new URLSearchParams(window.location.search);
   const modelUrl = urlParams.get('modelUrl');
   const patternUrl = urlParams.get('patternUrl');
   const scale = urlParams.get('scale') || '0.5';
-
-  document.getElementById('marker').setAttribute('patternUrl', patternUrl);
-  document.getElementById('model').setAttribute('gltf-model', modelUrl);
-  document.getElementById('model').setAttribute('scale', `${scale} ${scale} ${scale}`);
+  
+  // Error handling
+  function showError(message) {
+    const errorContainer = document.getElementById('error-container');
+    errorContainer.innerHTML = `<div class="error">${message}</div>`;
+  }
+  
+  if (!modelUrl) {
+    showError('Error: Missing 3D model URL parameter');
+  } else if (!patternUrl) {
+    showError('Error: Missing pattern URL parameter');
+  } else {
+    // Set marker and model attributes
+    document.getElementById('marker').setAttribute('patternUrl', patternUrl);
+    document.getElementById('model').setAttribute('gltf-model', modelUrl);
+    document.getElementById('model').setAttribute('scale', `${scale} ${scale} ${scale}`);
+    
+    // Add error handlers for model loading issues
+    document.getElementById('model').addEventListener('model-error', function(e) {
+      showError('Error loading 3D model. Please check the model URL.');
+    });
+  }
+  
+  // Add error handlers for marker pattern issues
+  document.addEventListener('artoolkit-not-found', function(e) {
+    showError('Error loading AR marker pattern. Please check the pattern URL.');
+  });
 </script>
 
 </body>
